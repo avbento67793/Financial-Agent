@@ -15,11 +15,18 @@ Commits on the fork (`6b8f0ae`, `04003e0`, etc.) are **not** on `afonsobento10/F
 
 **Who:** GitHub user `afonsobento10` (or anyone with write access on the team repo)
 
-1. Open this link and create a Pull Request:
+1. Open this link (form opens ready to submit):
 
-   **https://github.com/afonsobento10/Financial-Agent/compare/main...avbento67793:Financial-Agent:main**
+   **https://github.com/afonsobento10/Financial-Agent/compare/main...avbento67793:main?expand=1**
 
-2. Click **Create pull request** → **Merge pull request**.
+2. Title: `Merge agent, financial tools, and Streamlit app from fork`
+3. Click **Create pull request** → **Merge pull request**.
+
+Or from terminal (after `gh auth login`):
+
+```bash
+gh pr create --repo afonsobento10/Financial-Agent --head avbento67793:main --base main --title "Merge agent, financial tools, and Streamlit app from fork" --body "Adds LangGraph agent with CSV-backed market tools, Streamlit UI (app.py), and project cleanup."
+```
 
 3. Colleagues run:
 
