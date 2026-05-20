@@ -121,22 +121,92 @@ but the ability to **translate that technology into meaningful business advantag
 
 ---
 
----
+## BigBuck5 — Our Solution
 
-## Our Solution — Quick Start
+**BigBuck5** is an AI **decision-support** platform for an investment fund. It analyses US equities using historical market data and rule-based signals (RSI). It does **not** execute trades.
+
+### Architecture
+
+```
+DataLoader.py  →  data/*.csv  →  tools.py  →  agent.py (LangGraph + Ollama)  →  app.py (Streamlit)
+```
+
+### Prerequisites
+
+| Requirement | Notes |
+|-------------|--------|
+| **Python 3.10+** | Tested on 3.11 / 3.14 |
+| **Ollama** | [ollama.com](https://ollama.com) — must be running during chat |
+| **Internet** | Only for the first `DataLoader.py` run (downloads CSVs) |
+
+Default LLM model in code: `gemma4:e2b`. Change in the Streamlit sidebar or in `agent.py` if you use another model (`ollama pull <model>`).
+
+### Installation
 
 ```bash
+cd Financial-Agent
 pip install -r requirements.txt
-pip install streamlit>=1.28.0
+```
+
+This installs: `pandas`, `numpy`, `yfinance`, `langgraph`, `langchain-core`, `langchain-ollama`, `streamlit`.
+
+### Run the app (recommended for demo)
+
+**Step 1 — Download market data (once, needs internet):**
+
+```bash
 python DataLoader.py
+```
+
+Creates `data/AAPL.csv`, `data/MSFT.csv`, etc. (10 US stocks in `Config.STOCKS`).
+
+**Step 2 — Start Ollama** (desktop app or `ollama serve`).
+
+**Step 3 — Launch the UI:**
+
+```bash
 streamlit run app.py
 ```
 
-`streamlit` is also listed in `requirements.txt`; the second line is optional if the full install already succeeded.
+Opens at `http://localhost:8501`. Use the sidebar for charts and example questions.
 
-Terminal-only chat: `python agent.py`
+**Alternative — terminal chat only:**
 
-**Team git sync (fork → `afonsobento10/Financial-Agent`):** see [SYNC_GIT.md](SYNC_GIT.md)
+```bash
+python agent.py
+```
+
+### Project files
+
+| File | Role |
+|------|------|
+| `Config.py` | Stocks list, dates, RSI thresholds |
+| `DataLoader.py` | Download data + technical indicators → CSV |
+| `tools.py` | Market tools (summary, signal, compare, calculator) |
+| `agent.py` | LangGraph agent + Ollama |
+| `prompts.py` | System prompt for the fund assistant |
+| `app.py` | Streamlit frontend |
+| `requirements.txt` | Python dependencies |
+
+### Example demo questions
+
+- *What is the trading signal for AAPL?*
+- *Give me a technical summary of MSFT*
+- *Compare AAPL, MSFT and GOOGL*
+
+### Troubleshooting
+
+| Problem | Fix |
+|---------|-----|
+| `No CSV data` in the UI | Run `python DataLoader.py` |
+| `Could not start agent` | Start Ollama; check model name with `ollama list` |
+| `streamlit` not found | `pip install streamlit` or `python -m streamlit run app.py` |
+| Garbled text with `$` in answers | Fixed in latest version — use **USD** format; clear chat in sidebar |
+| Slow first reply | Normal — LLM + tool calls on first question |
+
+### Supported stocks (no crypto in this build)
+
+`AAPL`, `MSFT`, `AMZN`, `GOOGL`, `META`, `TSLA`, `NVDA`, `JPM`, `V`, `UNH`
 
 ---
 
